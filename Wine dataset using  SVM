@@ -1,0 +1,34 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_wine
+from sklearn.svm import SVC
+
+data = load_wine()
+X = data.data[:, :2]   # first 2 features
+y = data.target
+
+model = SVC(kernel='linear')
+model.fit(X, y)
+
+plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', edgecolors='k')
+
+ax = plt.gca()
+xlim = ax.get_xlim()
+ylim = ax.get_ylim()
+
+xx = np.linspace(xlim[0], xlim[1], 200)
+yy = np.linspace(ylim[0], ylim[1], 200)
+YY, XX = np.meshgrid(yy, xx)
+
+xy = np.c_[XX.ravel(), YY.ravel()]
+Z = model.predict(xy)
+Z = Z.reshape(XX.shape)
+
+ax.contourf(XX, YY, Z, alpha=0.3, cmap='viridis')
+
+ax.contour(XX, YY, Z, colors='k', linewidths=0.5)
+
+plt.title("SVM on Wine Dataset (2 Features)")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.show()
